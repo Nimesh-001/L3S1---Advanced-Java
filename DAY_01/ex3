@@ -1,0 +1,166 @@
+public interface Shape {
+    void draw();
+}
+
+----------------------------------------
+
+public interface Color {
+    void fill();
+}
+
+-----------------------------------------
+
+public class Circle implements Shape {
+    public void draw() {
+        System.out.println("draw the circle...");
+    }
+
+}
+
+--------------------------------------------
+
+public class Square implements Shape {
+    public void draw() {
+        System.out.println("draw the squre");
+    }
+}
+
+--------------------------------------------
+
+public class Rectangle implements Shape {
+    @Override
+    public void draw() {
+        System.out.println("draw the rectangle");
+    }
+}
+
+----------------------------------------------
+
+public class Red implements Color {
+    @Override
+    public void fill() {
+        System.out.println("fill red");
+    }
+}
+
+-----------------------------------------------
+
+public class Green implements Color {
+    @Override
+    public void fill() {
+        System.out.println("fill green");
+    }
+}
+
+-------------------------------------------------
+
+public class Blue implements Color {
+    @Override
+    public void fill() {
+        System.out.println("fill blue");
+    }
+}
+
+-----------------------------------------------
+
+public abstract class AbstractFactory {
+    abstract Shape getShape(String shapeName);
+    abstract Color getColor(String colorName);
+
+}
+
+---------------------------------------------------
+
+public class ShapeFactory extends AbstractFactory{
+
+    @Override
+    Shape getShape(String shapeName) {
+        if (shapeName.equals("Rectangle")) {
+            return new Rectangle();
+        }
+        else if (shapeName.equals("Circle")) {
+            return new Circle();
+
+        }
+        else if (shapeName.equals("Square")) {
+            return new Square();
+        }
+        return null;
+    }
+
+
+    @Override
+    Color getColor(String colorName) {
+        return null;
+    }
+}
+
+
+----------------------------------------------------------------
+
+public class ColorFactory extends AbstractFactory{
+    @Override
+    Shape getShape(String shapeName) {
+        return null;
+    }
+
+    @Override
+    Color getColor(String colorName) {
+        if (colorName.equals("red")) {
+            return new Red();
+        }
+        else if (colorName.equals("blue")) {
+            return new Blue();
+
+        }
+        else if (colorName.equals("green")) {
+            return new Green();
+        }
+        return null;
+    }
+}
+
+
+----------------------------------------------------------
+
+
+public class FactoryProducer {
+    public AbstractFactory getFactory(String choice) {
+        if (choice.equalsIgnoreCase("SHAPE")) {
+            return new ShapeFactory();
+        }
+        if (choice.equalsIgnoreCase("COLOR")) {
+            return new ColorFactory();
+        }
+        return null;
+    }
+
+}
+
+
+-----------------------------------------------------------------
+
+
+public class Demo {
+    public static void main(String[] args) {
+
+        AbstractFactory shapeFactory = FactoryProducer.getFactory("SHAPE");
+
+        Shape shape1 = shapeFactory.getShape("CIRCLE");
+        shape1.draw();
+
+        Shape shape2 = shapeFactory.getShape("RECTANGLE");
+        shape2.draw();
+
+        AbstractFactory colorFactory = FactoryProducer.getFactory("COLOR");
+
+        Color color1 = colorFactory.getColor("RED");
+        color1.fill();
+
+        Color color2 = colorFactory.getColor("GREEN");
+        color2.fill();
+    }
+}
+
+------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------
