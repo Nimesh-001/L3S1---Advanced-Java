@@ -1,0 +1,135 @@
+public interface simplenameinter {
+    void setsimplename(String s);
+    String getsimplename();
+
+}
+
+-----------------------------------------
+
+public class simplename implements simplenameinter{
+
+    private String name;
+    @Override
+    public void setsimplename(String s) {
+        this.name = s;
+    }
+
+    @Override
+    public String getsimplename() {
+        return this.name;
+    }
+}
+
+------------------------------------------------------
+
+import java.util.Scanner;
+
+public class myadptordemo {
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        System.out.println("please enter your name");
+        String name = sc.nextLine();
+
+        simplename obj = new simplename();
+
+        obj.setsimplename(name);
+        System.out.println("your name is " + obj.getsimplename());
+    }
+}
+
+-------------------------------------------------------------------------
+
+
+public interface complexnameinter {
+    void setfirstname(String firstname);
+    void setlastname(String lastname);
+
+    String getfirstname();
+    String getlastname();
+}
+
+--------------------------------------------------
+
+public class complexname implements complexnameinter{
+
+    private String firstname;
+    private String lastname;
+    @Override
+    public void setfirstname(String firstname) {
+        this.firstname = firstname;
+    }
+
+    @Override
+    public void setlastname(String lastname) {
+        this.lastname = lastname;
+    }
+
+    @Override
+    public String getfirstname() {
+        return this.firstname;
+    }
+
+    @Override
+    public String getlastname() {
+        return this.lastname;
+    }
+}
+
+----------------------------------------------------
+
+public class simpletocomplex implements complexnameinter{
+
+    private String fistname;
+    private String lastname;
+    private simplename simplename;
+
+    simpletocomplex(simplename simplename) {
+        this.simplename = simplename;
+        fistname = simplename.getsimplename().split(" ")[0];
+        lastname = simplename.getsimplename().split(" ")[1];
+    }
+
+    @Override
+    public void setfirstname(String firstname) {
+        this.fistname = firstname;
+
+
+    }
+
+    @Override
+    public void setlastname(String lastname) {
+        this.lastname = lastname;
+
+    }
+
+    @Override
+    public String getfirstname() {
+        return this.fistname ;
+    }
+
+    @Override
+    public String getlastname() {
+        return this.lastname;
+    }
+}
+
+--------------------------------------------------
+
+import java.util.Scanner;
+
+public class myadptordemo {
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        System.out.println("please enter your name");
+        String name = sc.nextLine();
+
+        simplename obj = new simplename();
+
+        obj.setsimplename(name);
+        //System.out.println("your name is " + obj.getsimplename());
+
+        simpletocomplex simpletocomplex = new simpletocomplex(obj);
+        System.out.println(simpletocomplex.getfirstname());
+        System.out.println(simpletocomplex.getlastname());
+    }
+}
