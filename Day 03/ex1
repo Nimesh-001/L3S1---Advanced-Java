@@ -1,0 +1,273 @@
+public class Test extends Thread{
+    public void run(){
+        System.out.println("curent thread: " + Thread.currentThread().getName());
+       // System.out.println("first one");
+    }
+}
+----------------------------------------------------------------
+
+public class Demo {
+    public static void main(String[] args) {
+        Test t1 = new Test();
+        t1.start();
+
+        Test t2 = new Test();
+        t2.run();
+
+        System.out.println("main thread "+Thread.currentThread().getName());
+    }
+}
+
+--------------------------------------------------------------
+
+
+public class myclock extends Thread {
+    @Override
+    public void run() {
+
+        //int i = 20;
+        for(int i = 20; i >=0;i--){
+            System.out.println("t minus "+ i);
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+
+        }
+
+    }
+}
+*************************************
+
+public class myclock extends Thread {
+
+
+    @Override
+    public void run() {
+
+        //int i = 20;
+        for(int i = 20; i >=1;i--){
+            System.out.println("t minus "+ i);
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+
+        }
+
+    }
+}
+
+
+
+-----------------------------------------------------------
+
+public class myracecardemo {
+    public static void main(String[] args) {
+        myclock mc = new myclock();
+        mc.start();
+
+    }
+}
+
+************************************************
+
+public class myracecardemo {
+    public static void main(String[] args) {
+        myclock mc = new myclock();
+
+
+        raceevent nitro =new raceevent(16,"filling nitro");
+        raceevent eng =new raceevent(6,"satrt eng");
+        raceevent off =new raceevent(1,"stop eng");
+
+        mc.start();
+        new Thread(nitro).start();
+        new Thread(eng).start();
+        new Thread(off).start();
+    }
+}
+
+
+
+-----------------------------------------------------
+
+
+public class raceevent implements Runnable{
+    private int stime;
+    private String msg;
+
+    public raceevent(int stime, String msg) {
+        this.stime = stime;
+        this.msg = msg;
+    }
+
+    @Override
+    public void run() {
+        try {
+            Thread.sleep((20-stime)*1000);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+        System.out.println(msg);
+    }
+}
+
+----------------------------------------------------
+
+public interface timemonitooor {
+    public int gettime();
+}
+
+
+----------------------------------------------------------
+
+
+
+public class myclock extends Thread implements timemonitooor {
+
+    private int i = 20;
+
+    myclock(int start){
+        this.i = start;
+    }
+
+
+    @Override
+    public void run() {
+
+        //int i = 20;
+        for(; i>=1; i--){
+            System.out.println("t minus "+ i);
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+
+        }
+
+    }
+
+    @Override
+    public int gettime() {
+        return 0;
+    }
+}
+
+-----------------------------------------------------------------
+
+public class myclock extends Thread implements timemonitooor {
+
+    private int i = 20;
+
+    myclock(int start){
+        this.i = start;
+    }
+
+
+    @Override
+    public void run() {
+
+        //int i = 20;
+        for(; i>=1; i--){
+            System.out.println("t minus "+ i);
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+
+        }
+
+    }
+
+    @Override
+    public int gettime() {
+        return this.i;
+    }
+}
+
+---------------------------------------------------------
+
+
+public class raceevent implements Runnable{
+    private int stime;
+    private String msg;
+
+    private timemonitooor tm;
+
+    public raceevent(int stime, String msg, timemonitooor tm) {
+        this.stime = stime;
+        this.msg = msg;
+        this.tm = tm;
+    }
+
+    @Override
+    public void run() {
+        try {
+            Thread.sleep((20-stime)*1000);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+        System.out.println(msg);
+    }
+}
+
+-----------------------------------------------------------------------------------
+
+
+public class myracecardemo {
+    public static void main(String[] args) {
+        myclock mc = new myclock(20);
+
+
+        raceevent nitro =new raceevent(16,"filling nitro",mc);
+        raceevent eng =new raceevent(6,"satrt eng",mc);
+        raceevent off =new raceevent(1,"stop eng",mc);
+
+        mc.start();
+        new Thread(nitro).start();
+        new Thread(eng).start();
+        new Thread(off).start();
+    }
+}
+
+--------------------------------------------------------------------------------------------------------
+
+
+public class raceevent implements Runnable{
+    private int stime;
+    private String msg;
+
+    private timemonitooor tm;
+
+    public raceevent(int stime, String msg, timemonitooor tm) {
+        this.stime = stime;
+        this.msg = msg;
+        this.tm = tm;
+    }
+
+    @Override
+    public void run() {
+
+
+        boolean isdone = false;
+        while(!isdone){
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+            if (tm.gettime() <= stime){
+                System.out.println(msg);
+                isdone = true;
+            }
+        }
+
+
+
+    }
+}
