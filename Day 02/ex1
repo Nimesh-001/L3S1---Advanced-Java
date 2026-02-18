@@ -1,0 +1,46 @@
+public abstract class Game {
+    public final void play(){
+        startgame();
+        playgame();
+        endgame();
+
+    }
+
+    void startgame() {
+        System.out.println("game is starting....");
+    }
+
+   abstract void  playgame();
+
+    void endgame(){
+        System.out.println("game is ending....");
+    }
+}
+-------------------------------------------------------------
+
+public class Soccer extends Game{
+    @Override
+    void playgame() {
+        System.out.println("playing Soccer...kick the ball....");
+    }
+}
+--------------------------------------------------------------
+
+public class Basketball extends Game{
+    @Override
+    void playgame() {
+        System.out.println("playing basketball........");
+    }
+}
+
+------------------------------------------------------------
+public class Demo {
+    public static void main(String[] args) {
+        Game soccer = new Soccer();
+        soccer.play();
+        System.out.println();
+
+        Game basketball = new Basketball();
+        basketball.play();
+    }
+}
