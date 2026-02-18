@@ -1,0 +1,78 @@
+public interface MyObsever {
+    public void update(String msg);
+
+
+
+}
+
+-------------------------------------------------
+
+
+public class Student implements MyObsever {
+    private String name;
+
+    public Student(String name){
+        this.name=name;
+    }
+    @Override
+    public void update(String msg){
+        System.out.println("i am student " +this.name + " I got message "+ msg);
+    }
+}
+
+
+-----------------------------------------------------------------
+
+
+public interface MySubject {
+
+
+    public void registerObserver(MyObsever observer);
+    public void removeObserver(MyObsever observer);
+    public void notifyObserver();
+
+}
+
+
+-------------------------------------------------------------------
+
+import java.util.Scanner;
+
+public class TecLms implements MySubject{
+    private MyObsever stu;
+    private String msg;
+
+    @Override
+    public void registerObserver(MyObsever observer){
+        stu=observer;
+    }
+    public void removeObserver(MyObsever observer){
+        stu=null;
+    }
+    public void notifyObserver(){
+        stu.update(msg);
+    }
+
+    public void sendMessage(){
+        Scanner sc=new Scanner(System.in);
+        System.out.println("Please enter the message :");
+        msg= sc.nextLine();
+        notifyObserver();
+    }
+}
+
+-------------------------------------------------------------------------------
+
+
+public class MyflecObserverDemo {
+    public static void main(String[] args) {
+        TecLms tc=new TecLms();
+
+        Student stu =new Student("kamal");
+        tc.registerObserver(stu);
+        tc.sendMessage();
+
+        tc.removeObserver(stu);
+        tc.sendMessage();
+    }
+}
