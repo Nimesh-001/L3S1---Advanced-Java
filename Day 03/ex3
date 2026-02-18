@@ -1,0 +1,53 @@
+import java.util.Observable;
+import java.util.Observer;
+
+public class student implements Observer {
+    private String name;
+
+    public student(String name) {
+        this.name = name;
+    }
+
+    @Override
+    public void update(Observable o, Object arg) {
+        if ( o instanceof teclms){
+            System.out.println("i am student :" + this.name+", i got the messege: "+((teclms) o).msg);
+        }
+    }
+}
+
+----------------------------------------------------------------------
+
+
+import java.util.Observable;
+import java.util.Scanner;
+
+public class teclms extends Observable {
+    public String msg;
+    Scanner sc = new Scanner(System.in);
+
+    public void sendmsg(){
+        System.out.println("please enter the msg you need to send : ");
+        msg = sc.nextLine();
+        setChanged();
+        notifyObservers();
+    }
+}
+
+----------------------------------------------------------
+
+
+public class demo {
+    public static void main(String[] args) {
+        teclms subject = new teclms();
+
+       student nimal = new student("nimal");
+       student kaml = new student("kaml");
+       student alex = new student("alex");
+
+       subject.addObserver(nimal);
+       subject.addObserver(kaml);
+
+       subject.sendmsg();
+    }
+}
