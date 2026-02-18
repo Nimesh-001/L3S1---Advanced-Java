@@ -1,0 +1,73 @@
+public class mydifficlultregiter {
+
+    private char regno[] = new char[7];
+
+    public void setfirstcharacter(char ch) {
+        regno[0] = ch;
+    }
+
+    public void setsecondcharacter(char ch) {
+        regno[1] = ch;
+    }
+
+    public void setthirdcharacter(char ch) {
+        regno[2] = ch;
+    }
+
+    public void setfourthcharacter(char ch) {
+        regno[3] = ch;
+    }
+
+    public void setfifthcharacter(char ch) {
+        regno[4] = ch;
+    }
+
+    public void setsixthcharacter(char ch) {
+        regno[5] = ch;
+    }
+
+    public void setseventhcharacter(char ch) {
+        regno[6] = ch;
+    }
+
+    public String getregno() {
+        return new String(regno);
+    }
+}
+
+-------------------------------------------------------------
+
+import java.util.Scanner;
+
+public class myfcadedemo {
+    public static void main(String[] args) {
+
+        Scanner sc = new Scanner(System.in);
+        mydifficlultregiter obj = new mydifficlultregiter();
+
+        System.out.println("Enter first character:");
+        obj.setfirstcharacter(sc.next().charAt(0));
+
+        System.out.println("Enter second character:");
+        obj.setsecondcharacter(sc.next().charAt(0));
+
+        System.out.println("Enter third character:");
+        obj.setthirdcharacter(sc.next().charAt(0));
+
+        System.out.println("Enter fourth character:");
+        obj.setfourthcharacter(sc.next().charAt(0));
+
+        System.out.println("Enter fifth character:");
+        obj.setfifthcharacter(sc.next().charAt(0));
+
+        System.out.println("Enter sixth character:");
+        obj.setsixthcharacter(sc.next().charAt(0));
+
+        System.out.println("Enter seventh character:");
+        obj.setseventhcharacter(sc.next().charAt(0));
+
+        System.out.println("Registration Number: " + obj.getregno());
+
+        sc.close();
+    }
+}
