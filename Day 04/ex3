@@ -1,0 +1,92 @@
+public class Account {
+
+    private static double balance = 0.0;
+
+    public static double getBalance() {
+        return balance;
+    }
+
+    public static void setBalance(double balance) {
+        Account.balance = balance;
+    }
+}
+
+------------------------------------------------------------
+
+public class Customer {
+
+    private double balance;
+    private double withdrawammount;
+    private double depositammount;
+
+    public synchronized void withdraw(double amount) {
+
+        balance = Account.getBalance();
+        withdrawammount = amount;
+
+        if (withdrawammount > balance) {
+            System.out.println("Insufficient balance : "+balance);
+
+            try {
+                wait();
+                balance = Account.getBalance();
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+        } else {
+            balance = balance - withdrawammount;
+            Account.setBalance(balance);
+            System.out.println("Withdraw successful.. "+balance);
+        }
+    }
+
+    public synchronized void deposit(double amount) {
+
+        balance = Account.getBalance();
+        depositammount = amount;
+
+        balance = balance + depositammount;
+        Account.setBalance(balance);
+
+        System.out.println(  "Deposit successful .. "+balance);
+
+        if (withdrawammount <= balance) {
+            notify();
+        } else {
+            System.out.println("Insufficient balance in the account, add more money to withdraw amount to the account. ");
+        }
+    }
+}
+
+-----------------------------------------------------------------
+
+public class Demo {
+    public static void main(String[] args) {
+        Customer customer = new Customer();
+
+        new Thread(){
+            public void run(){
+                customer.withdraw(1000);
+            }
+        }.start();
+
+        new Thread(){
+            public void run(){
+                customer.deposit(500);
+            }
+        }.start();
+
+        new Thread(){
+            public void run(){
+                customer.deposit(700);
+            }
+        }.start();
+
+
+
+
+    }
+}
+
+--------------------------------------------------------------------
+-----------------------------------------------------------------------
