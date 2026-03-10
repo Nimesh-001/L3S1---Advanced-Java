@@ -1,0 +1,285 @@
+public class Pen {
+    public synchronized void writewithppaper(Paper p) {
+        System.out.println(Thread.currentThread().getName()+" : WRITING with paper trying to get pen");
+        p.finishwriting();
+    }
+
+    public  synchronized  void finishwriting() {
+        System.out.println(Thread.currentThread().getName()+" : is finished writing");
+
+    }
+}
+
+------------------------------------------------------
+
+public class Paper {
+
+    public synchronized void writewithpen(Pen pen) {
+        System.out.println(Thread.currentThread().getName()+" : WRITING with paper trying to get pen");
+        pen.finishwriting();
+    }
+
+    public  synchronized  void finishwriting() {
+        System.out.println(Thread.currentThread().getName()+" : is finished writing");
+
+    }
+
+}
+
+--------------------------------------------
+
+public class Kamal implements Runnable {
+
+    private Paper paper;
+    private Pen pen;
+
+    public Kamal(Paper paper, Pen pen) {
+        this.paper = paper;
+        this.pen = pen;
+    }
+
+    @Override
+    public void run() {
+        paper.writewithpen(pen);
+
+    }
+
+
+}
+
+--------------------------------------------
+
+public class Nimal implements Runnable {
+
+    private Pen pen;
+    private Paper paper;
+
+    public Nimal(Pen pen, Paper paper) {
+        this.pen = pen;
+        this.paper = paper;
+    }
+
+    @Override
+    public void run() {
+        pen.writewithppaper(paper);
+
+    }
+
+}
+
+---------------------------------------------------
+
+public class Demo {
+    public static void main(String[] args) {
+        final Pen pen = new Pen();
+        final Paper paper = new Paper();
+
+        Thread t1 = new Thread(new Kamal(paper,pen),"kaml");
+        Thread t2 = new Thread(new Nimal(pen, paper),"nimal");
+
+        t1.start();
+        t2.start();
+
+    }
+}
+
+-------------------------------------------------------------------------
+----------------------------------------------------------------------
+
+
+public class Pen {
+    public synchronized void writewithppaper(Paper p) {
+        System.out.println(Thread.currentThread().getName()+" : WRITING with paper trying to get pen");
+        p.finishwriting();
+    }
+
+    public  synchronized  void finishwriting() {
+        System.out.println(Thread.currentThread().getName()+" : is finished writing");
+
+    }
+}
+
+-----------------------------------
+
+public class Paper {
+
+    public synchronized void writewithpen(Pen pen) {
+        System.out.println(Thread.currentThread().getName()+" : WRITING with paper trying to get pen");
+        pen.finishwriting();
+    }
+
+    public  synchronized  void finishwriting() {
+        System.out.println(Thread.currentThread().getName()+" : is finished writing");
+
+    }
+
+}
+
+-----------------------------------
+
+public class Kamal implements Runnable {
+
+    private Paper paper;
+    private Pen pen;
+
+    public Kamal(Paper paper, Pen pen) {
+        this.paper = paper;
+        this.pen = pen;
+    }
+
+    @Override
+    public void run() {
+        synchronized (pen) { // lock the object this is the solution for the deadlock, that mean use object level lock.
+            paper.writewithpen(pen);
+
+        }
+    }
+
+
+}
+
+-------------------------------------
+
+public class Nimal implements Runnable {
+
+    private Pen pen;
+    private Paper paper;
+
+    public Nimal(Pen pen, Paper paper) {
+        this.pen = pen;
+        this.paper = paper;
+    }
+
+    @Override
+    public void run() {
+        pen.writewithppaper(paper);
+
+    }
+
+}
+
+----------------------------------------
+
+public class Demo {
+    public static void main(String[] args) {
+        final Pen pen = new Pen();
+        final Paper paper = new Paper();
+
+        Thread t1 = new Thread(new Kamal(paper,pen),"kaml");
+        Thread t2 = new Thread(new Nimal(pen, paper),"nimal");
+
+        t1.start();
+        t2.start();
+
+    }
+}
+
+-------------------------------------------
+--------------------------------------------
+
+
+public class testdemo implements Runnable {
+    @Override
+    public void run() {
+        Thread t = Thread.currentThread();
+        System.out.println("Thread Stared: " + t.getName());
+
+        try {
+            Thread.sleep(4000);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+        System.out.println("Thread Finished: " + t.getName());
+    }
+}
+
+------------------------------------
+
+public class TESTdemomain {
+    public static void main(String[] args) {
+        testdemo demo = new testdemo();
+
+        Thread t1 = new Thread(demo, "Thread1");
+        Thread t2 = new Thread(demo, "Thread2");
+
+        t1.start();
+        t2.start();
+
+        try {
+            t2.join();
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+
+    }
+}
+
+--------------------------------------------
+------------------------------------------------
+
+
+
+public class Mytimer implements Runnable {
+    private int curtime;
+
+    public Mytimer(int curtime) {
+        this.curtime = curtime;
+    }
+
+
+
+    @Override
+    public void run() {
+        System.out.println("time is " + curtime);
+    }
+}
+
+--------------------------------------
+
+public class Mycoffeevent implements Runnable {
+
+    private String msg;
+
+    public Mycoffeevent(String msg) {
+        this.msg = msg;
+    }
+
+    @Override
+    public void run() {
+        System.out.println(msg);
+    }
+}
+
+---------------------------------------
+
+import java.util.concurrent.ScheduledThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
+
+public class coffedemo {
+    public static void main(String[] args) {
+        ScheduledThreadPoolExecutor executor = new ScheduledThreadPoolExecutor(1);
+
+        Mycoffeevent cofee = new Mycoffeevent("ading coffe..");
+        Mycoffeevent sugar = new Mycoffeevent("adding sugar..");
+        Mycoffeevent water = new Mycoffeevent("adding water...");
+        Mycoffeevent serve = new Mycoffeevent("serving the cofee...");
+
+
+        for (int i=1; i<=2; i++) {
+            executor.schedule(new Mytimer(i), i, TimeUnit.SECONDS);
+
+        }
+
+
+
+        executor.schedule(cofee,4, TimeUnit.SECONDS);
+        executor.schedule(sugar,7, TimeUnit.SECONDS);
+        executor.schedule(water,11, TimeUnit.SECONDS);
+        executor.schedule(serve,20, TimeUnit.SECONDS);
+
+        executor. shutdown();
+    }
+}
+
+-----------------------------------------------------------
+-----------------------------------------------------------
