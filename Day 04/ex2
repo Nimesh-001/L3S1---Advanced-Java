@@ -1,0 +1,150 @@
+synchornized method practice.
+
+
+
+public class MyTimer implements Runnable {
+
+    @Override
+    public void run() {
+        this.printnum();
+
+    }
+
+
+    public void printnum(){
+        for(int i=1;i<=10;i++){
+            System.out.println(Thread.currentThread().getName()+" : "+i);
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+        }
+    }
+
+}
+
+
+---------------------------------------------------
+public class Demo {
+    public static void main(String[] args) {
+        MyTimer T1 = new MyTimer();
+        MyTimer T2 = new MyTimer();
+
+        Thread t1 = new Thread(T1);
+        Thread t2 = new Thread(T2);
+
+        t1.setName("my thimer 1");
+        t2.setName("my thimer 2");
+
+        t1.start();
+        t2.start();
+        
+
+    }
+}
+------------------------------------------------------------------------
+--------------------------------------------------------------------------
+
+public class MyTimer implements Runnable {
+
+    @Override
+    public void run() {
+        this.printnum();
+
+    }
+
+
+    public synchronized void printnum(){// add synchornized key word
+        for(int i=1;i<=10;i++){
+            System.out.println(Thread.currentThread().getName()+" : "+i);
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+        }
+    }
+
+}
+
+-------------------------------------------------------------------
+
+public class Demo {
+    public static void main(String[] args) {
+        MyTimer T1 = new MyTimer();
+        //MyTimer T2 = new MyTimer();//coment this first
+
+        Thread t1 = new Thread(T1);
+        Thread t2 = new Thread(T1);// then chnage t2 in to the t1 then run
+
+        t1.setName("my thimer 1");
+        t2.setName("my thimer 2");
+
+        t1.start();
+        t2.start();
+
+
+    }
+}
+
+----------------------------------------------------------------------------------------
+
+public class MyTimer implements Runnable {
+
+    @Override
+    public void run() {
+        this.printdenum();
+        this.printnum();
+
+
+    }
+
+
+    public synchronized void printnum(){// add synchornized key word
+        for(int i=1;i<=10;i++){
+            System.out.println(Thread.currentThread().getName()+" : "+i);
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+        }
+    }
+
+
+    public void printdenum(){
+        for(int i=10;i>=1;i--){
+            System.out.println(Thread.currentThread().getName()+" : "+i+"d");
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+        }
+    }
+
+}
+
+-----------------------------------------------------------------------
+
+public class Demo {
+    public static void main(String[] args) {
+        MyTimer T1 = new MyTimer();
+        //MyTimer T2 = new MyTimer();
+
+        Thread t1 = new Thread(T1);
+        Thread t2 = new Thread(T1);
+
+        t1.setName("my thimer 1");
+        t2.setName("my thimer 2");
+
+        t1.start();
+        t2.start();
+
+
+    }
+}
+
+----------------------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------------------------------
