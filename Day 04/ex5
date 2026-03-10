@@ -1,0 +1,41 @@
+import java.util.concurrent.locks.ReentrantLock;
+
+public class Mynewtimr extends Thread {
+    //using th lock
+    ReentrantLock lock = new ReentrantLock();
+
+
+
+
+   // public synchronized void run() {
+    public void run() {
+        lock.lock();
+
+        for (int i = 1; i <= 10; i++) {
+            System.out.println(i);
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        lock.unlock();
+    }
+}
+
+------------------------------------------------------
+
+import java.util.concurrent.ScheduledThreadPoolExecutor;
+
+public class Demo {
+    public static void main(String[] args) {
+        ScheduledThreadPoolExecutor executor = new ScheduledThreadPoolExecutor(2);
+        Mynewtimr mytimr = new Mynewtimr();
+
+        executor.execute(mytimr);
+        executor.execute(mytimr);
+        executor.shutdown();
+    }
+}
+
+--------------------------------------------
