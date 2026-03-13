@@ -1,0 +1,290 @@
+import java.io.Serializable;
+
+public class Student implements Serializable {
+     private int id;
+     private String name;
+
+    public Student(int id, String name) {
+        this.id = id;
+        this.name = name;
+    }
+
+    public  int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+}
+
+--------------------------------------------------------
+
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
+
+public class MySerial {
+    public static void main(String[] args) {
+        Student stu = new Student(1,"amal");
+
+        try {
+            FileOutputStream fos = new FileOutputStream("C:\\Users\\ICT_Common\\Desktop\\1395\\abc.text");
+            ObjectOutputStream oos = new ObjectOutputStream(fos);
+            oos.writeObject(stu);
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+}
+
+
+----------------------------------------------------------------------
+
+
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+
+public class Deserial {
+    public static void main(String[] args) {
+        try {
+            FileInputStream fis = new FileInputStream("C:\\Users\\ICT_Common\\Desktop\\1395\\abc.text");
+            ObjectInputStream ois = new ObjectInputStream(fis);
+            Student student = (Student) ois.readObject();
+            System.out.println(student.getId());
+            System.out.println(student.getName());
+
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+    }
+}
+
+
+-------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------
+
+import java.io.Serializable;
+
+public class Student implements Serializable {
+     private int id;
+     private String name;
+     private static double age;//static are not geting serialize....
+
+    public Student(int id, String name) {
+        this.id = id;
+        this.name = name;
+    }
+
+    public  int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public static double getAge() {
+        return age;
+    }
+
+    public static void setAge(double age) {
+        Student.age = age;
+    }
+}
+
+------------------------------------------------------
+
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
+
+public class MySerial {
+    public static void main(String[] args) {
+        Student stu = new Student(1,"amal");
+        Student.setAge(25);
+
+
+        try {
+            FileOutputStream fos = new FileOutputStream("C:\\Users\\ICT_Common\\Desktop\\1395\\abc.text");
+            ObjectOutputStream oos = new ObjectOutputStream(fos);
+            oos.writeObject(stu);
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+}
+
+-------------------------------------------------------------
+
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+
+public class Deserial {
+    public static void main(String[] args) {
+        try {
+            FileInputStream fis = new FileInputStream("C:\\Users\\ICT_Common\\Desktop\\1395\\abc.text");
+            ObjectInputStream ois = new ObjectInputStream(fis);
+            Student student = (Student) ois.readObject();
+            System.out.println(student.getId());
+            System.out.println(student.getName());
+            System.out.println(student.getAge());
+
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+    }
+}
+
+---------------------------------------------------------------
+
+--------------------------------------------------------------
+
+
+import java.io.Serializable;
+
+public class Student implements Serializable {
+     private int id;
+     private String name;
+     private static double age;//static are not geting serialize....
+     private transient int password;
+
+    public Student(int id, String name) {
+        this.id = id;
+        this.name = name;
+    }
+
+
+    public  int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public static double getAge() {
+        return age;
+    }
+
+    public static void setAge(double age) {
+        Student.age = age;
+    }
+
+    public int getPassword() {
+        return password;
+    }
+
+    public void setPassword(int password) {
+        this.password = password;
+    }
+}
+
+-----------------------------------------------------------
+
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
+
+public class MySerial {
+    public static void main(String[] args) {
+        Student stu = new Student(1,"amal");
+        Student.setAge(25);
+        stu.setPassword(123);
+
+
+        try {
+            FileOutputStream fos = new FileOutputStream("C:\\Users\\ICT_Common\\Desktop\\1395\\abc.text");
+            ObjectOutputStream oos = new ObjectOutputStream(fos);
+            oos.writeObject(stu);
+            oos.flush();
+            oos.close();
+            fos.close();
+            
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+}
+
+
+--------------------------------------------------------------------
+
+
+
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+
+public class Deserial {
+    public static void main(String[] args) {
+        try {
+            FileInputStream fis = new FileInputStream("C:\\Users\\ICT_Common\\Desktop\\1395\\abc.text");
+            ObjectInputStream ois = new ObjectInputStream(fis);
+            Student student = (Student) ois.readObject();
+            System.out.println(student.getId());
+            System.out.println(student.getName());
+            System.out.println(student.getAge());
+            System.out.println(student.getPassword());
+            
+            ois.close();
+            fis.close();
+            
+
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+    }
+}
+
+-----------------------------------------------------
