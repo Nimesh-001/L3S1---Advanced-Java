@@ -1,0 +1,128 @@
+import java.io.Serializable;
+
+public class Animal implements Serializable {
+    private double weight;
+
+
+    public Animal(double weight) {
+        this.weight = weight;
+    }
+
+    public double getWeight() {
+        return weight;
+    }
+
+    public void setWeight(double weight) {
+        this.weight = weight;
+    }
+}
+
+--------------------------
+
+public class Dog extends Animal {
+    private String color;
+
+    public Dog(double weight, String color) {
+        super(weight);
+        this.color = color;
+    }
+
+    public String getColor() {
+        return color;
+    }
+
+    public void setColor(String color) {
+        this.color = color;
+    }
+
+    @Override
+    public String toString() {
+        return "Dog[\ncolor=" + color + "\nweight=" + getWeight() + "]";
+    }
+}
+
+-----------------------------------------------------
+
+
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
+
+public class Myserial {
+
+    FileOutputStream fos;
+    ObjectOutputStream oos;
+
+
+
+    public void serializedog(Dog dog){
+        try {
+            fos = new FileOutputStream("C:\\Users\\ICT_Common\\Desktop\\1395\\cd.txt");
+            oos = new ObjectOutputStream(fos);
+            oos.writeObject(dog);
+            oos.flush();
+            oos.close();
+            fos.close();
+
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+    }
+}
+
+-------------------------------------------------
+
+import java.io.*;
+
+public class Mydeserial {
+
+    FileInputStream fis;
+    ObjectInputStream ois;
+
+    public void deserializedog(){
+
+        try {
+            fis = new FileInputStream("C:\\Users\\ICT_Common\\Desktop\\1395\\cd.txt");
+            ois = new ObjectInputStream(fis);
+            Dog d = (Dog) ois.readObject();
+            System.out.println(d.toString());
+            ois.close();
+            fis.close();
+
+
+
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+
+    }
+}
+
+
+-------------------------------------------------
+
+
+public class Testmain {
+    public static void main(String[] args) {
+
+        Myserial myserial = new Myserial();
+        Mydeserial mydeserial = new Mydeserial();
+
+        Dog d = new Dog(30.0,"black");
+
+        myserial.serializedog(d);
+        mydeserial.deserializedog();
+    }
+}
+
+
+----------------------------------------------------------------------
+----------------------------------------------------------------------
