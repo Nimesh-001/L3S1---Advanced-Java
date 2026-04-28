@@ -1,0 +1,44 @@
+import java.io.DataInputStream;
+import java.net.ServerSocket;
+import java.net.Socket;
+
+public class Myserver {
+    public static void main(String[] args) {
+
+        try {
+            ServerSocket serverSocket = new ServerSocket(6666);
+            Socket socket = serverSocket.accept();
+            DataInputStream in = new DataInputStream(socket.getInputStream());
+            String str = in.readUTF();
+            System.out.println("message = "+ str);
+            socket.close();
+            serverSocket.close();
+
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+    }
+}
+
+-------------------------------------------------------
+
+import java.io.DataOutputStream;
+import java.net.Socket;
+
+public class Myclient {
+    public static void main(String[] args) {
+
+        try {
+            Socket socket = new Socket("localhost",6666);
+            DataOutputStream dos = new DataOutputStream(socket.getOutputStream());
+            dos.writeUTF("Hello server");
+            dos.flush();
+            socket.close();
+
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+    }
+}
+
+----------------------------
