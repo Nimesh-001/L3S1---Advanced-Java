@@ -1,0 +1,78 @@
+client say hi server say hi and stop
+
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.net.ServerSocket;
+import java.net.Socket;
+
+public class Myserver {
+    public static void main(String[] args) {
+        try {
+            ServerSocket serverSocket = new ServerSocket(6666);
+            System.out.println("Waiting for connection...");
+
+            Socket socket = serverSocket.accept();
+            //System.out.println("Accepted connection from " + socket.getRemoteSocketAddress());
+            System.out.println("client connected");
+
+            DataInputStream in = new DataInputStream(socket.getInputStream());
+            DataOutputStream out = new DataOutputStream(socket.getOutputStream());
+
+            String str = "";
+
+            while (!str.equals("bye")){
+                str = in.readUTF();
+                System.out.println("client: " + str);
+                out.writeUTF(str);
+                out.flush();
+
+            }
+            socket.close();
+            serverSocket.close();
+
+
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+    }
+}
+
+-----------------------------------------------------
+
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.net.Socket;
+import java.util.Scanner;
+
+public class Myclient {
+    public static void main(String[] args) {
+        try {
+            Socket socket = new Socket("localhost",6666);
+
+            DataOutputStream out = new DataOutputStream(socket.getOutputStream());
+            DataInputStream in = new DataInputStream(socket.getInputStream());
+
+            Scanner sc = new Scanner(System.in);
+            String msg = "";
+
+            while (!msg.equals("bye")){
+                msg = sc.nextLine();
+                out.writeUTF(msg);
+
+                String s = in.readUTF();
+                System.out.println("server: " + s);
+                out.flush();
+
+            }
+            socket.close();
+
+
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+    }
+}
