@@ -1,0 +1,111 @@
+import java.io.IOException;
+import java.net.ServerSocket;
+import java.net.Socket;
+
+public class Server2 {
+    public static void main(String[] args) {
+
+        try {
+            ServerSocket serverSocket = new ServerSocket(6666);
+            System.out.println("waiting for client");
+
+            while (true) {
+                Socket socket = serverSocket.accept();
+                System.out.println("client connected");
+                ClientHandler clientHandler = new ClientHandler(socket);
+                Thread thread = new Thread(clientHandler);
+                thread.start();
+
+            }
+
+
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+}
+
+----------------------------------------------------------------------
+
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.net.Socket;
+import java.util.Scanner;
+
+public class ClientHandler implements Runnable {
+    private Socket socket;
+    public ClientHandler(Socket socket) {
+        this.socket = socket;
+    }
+    public void run() {
+        try {
+            DataInputStream dataInputStream = new DataInputStream(socket.getInputStream());
+            DataOutputStream dataOutputStream = new DataOutputStream(socket.getOutputStream());
+
+            String msg = "";
+            int count = 0;
+
+            while (count < 5) {
+                msg = dataInputStream.readUTF();
+                System.out.println("client : " + msg);
+                dataOutputStream.writeUTF(msg);
+                dataOutputStream.flush();
+                count++;
+
+
+            }
+            dataOutputStream.close();
+            dataOutputStream.close();
+            socket.close();
+
+
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+    }
+}
+
+-------------------------------------------------------------------
+
+
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.net.Socket;
+import java.util.Scanner;
+
+public class Myclient {
+    public static void main(String[] args) {
+        try {
+            Socket socket = new Socket("localhost",6666);
+
+            DataOutputStream out = new DataOutputStream(socket.getOutputStream());
+            DataInputStream in = new DataInputStream(socket.getInputStream());
+
+            Scanner sc = new Scanner(System.in);
+            String msg = "";
+            int count = 0;
+
+            while (count < 5) {
+                msg = sc.nextLine();
+                out.writeUTF(msg);
+                out.flush();
+
+                String s = in.readUTF();
+                System.out.println("server: " + s);
+                count++;
+
+            }
+            in.close();
+            out.close();
+           socket.close();
+
+
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+    }
+}
