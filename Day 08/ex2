@@ -1,0 +1,35 @@
+datagramme packets by datagramme socket
+
+import java.net.DatagramPacket;
+import java.net.DatagramSocket;
+import java.net.InetAddress;
+
+public class Sender {
+    public static void main(String[] args) throws Exception {
+        DatagramSocket socket = new DatagramSocket();
+        String STR = "Hello World";
+        InetAddress IP = InetAddress.getByName("127.0.0.1");
+        DatagramPacket packet = new DatagramPacket(STR.getBytes(), STR.length(), IP, 3000);
+        socket.send(packet);
+        socket.close();
+
+    }
+}
+
+---------------------------------------------------
+
+import java.net.DatagramPacket;
+import java.net.DatagramSocket;
+
+public class Receiver {
+    public static void main(String[] args) throws Exception {
+        DatagramSocket socket = new DatagramSocket(3000);
+        byte[] buf = new byte[1024];
+        DatagramPacket packet = new DatagramPacket(buf, 1024);
+        socket.receive(packet);
+        String s = new String(packet.getData(), 0, packet.getLength());
+        System.out.println(s);
+        socket.close();
+
+    }
+}
