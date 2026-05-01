@@ -1,0 +1,122 @@
+package com.ictec.calc;
+
+import java.rmi.Remote;
+import java.rmi.RemoteException;
+
+public interface Calculator extends Remote {
+    public double addtwonumber(double num1, double num2) throws RemoteException;
+    public double subtwonumber(double num1, double num2) throws RemoteException;
+    public double multtwonumber(double num1, double num2) throws RemoteException;
+    public double divtwonumber(double num1, double num2) throws RemoteException;
+
+}
+
+-----------------------------------------------------------------------------------------
+
+package com.ictec.calc;
+
+import java.rmi.RemoteException;
+import java.rmi.server.UnicastRemoteObject;
+
+public class Mycalculator extends UnicastRemoteObject implements Calculator {
+
+    public Mycalculator() throws RemoteException {
+        super();
+    }
+
+    @Override
+    public double addtwonumber(double x, double y) throws RemoteException {
+        return x + y;
+    }
+
+    @Override
+    public double subtwonumber(double x, double y) throws RemoteException {
+        return x - y;
+    }
+
+    @Override
+    public double multtwonumber(double x, double y) throws RemoteException {
+        return x * y;
+    }
+
+    @Override
+    public double divtwonumber(double x, double y) throws RemoteException {
+        if (y == 0) {
+            throw new RemoteException("Cannot divide by zero");
+        }
+        return x / y;
+    }
+}
+
+--------------------------------------------------------------------------------
+
+
+package com.ictec.server;
+
+import com.ictec.calc.Calculator;
+import com.ictec.calc.Mycalculator;
+
+import java.rmi.registry.LocateRegistry;
+import java.rmi.registry.Registry;
+
+public class Myserver {
+
+    public static void main(String[] args) {
+        try {
+            Registry registry = LocateRegistry.createRegistry(54321);
+
+            Calculator mycal = new Mycalculator();
+
+            registry.rebind("Calculator", mycal);
+
+            System.out.println("Server running...");
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+}
+
+--------------------------------------------------------------------------------------
+
+
+package com.ictec.client;
+
+import com.ictec.calc.Calculator;
+import com.ictec.calc.Mycalculator;
+
+import java.rmi.NotBoundException;
+import java.rmi.RemoteException;
+import java.rmi.registry.LocateRegistry;
+import java.rmi.registry.Registry;
+
+public class Myclient {
+    public static void main(String[] args) {
+        try {
+            Registry registry = LocateRegistry.getRegistry("localhost", 54321);
+            Calculator cal = (Calculator) registry.lookup("Calculator");
+
+            double add = cal.addtwonumber(10,20);
+            System.out.println("result = "+add);
+
+            double sub = cal.subtwonumber(20, 10);
+            System.out.println("Subtraction Result = " + sub);
+
+            double mul = cal.multtwonumber(10, 5);
+            System.out.println("Multiplication Result = " + mul);
+
+            double div = cal.divtwonumber(20, 5);
+            System.out.println("Division Result = " + div);
+
+        } catch (RemoteException e) {
+            throw new RuntimeException(e);
+        } catch (NotBoundException e) {
+            throw new RuntimeException(e);
+        }
+
+    }
+}
+
+
+-------------------------------------------------------------------------
+---------------------------------------------------------------------------
