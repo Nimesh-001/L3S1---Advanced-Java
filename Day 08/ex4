@@ -1,0 +1,209 @@
+CREATE DATABASE student;
+
+USE student;
+
+CREATE TABLE basicdata (
+    stu_id VARCHAR(10) PRIMARY KEY,
+    stu_name VARCHAR(50),
+    stu_address VARCHAR(100)
+);
+
+INSERT INTO basicdata VALUES
+('TG001','Amila','Matara'),
+('TG002','Basil','Hambantota'),
+('TG003','Charles','Jaffna'),
+('TG004','Debian','Colombo');
+
+---------------------------------------------------------------------------------------------------
+
+
+import java.io.Serializable;
+
+public class Student implements Serializable {
+    private String id;
+    private String name;
+    private String address;
+
+    public Student() {
+
+    }
+
+    public Student(String id, String name, String address) {
+        this.id = id;
+        this.name = name;
+        this.address = address;
+    }
+
+    public String getId() {
+        return id;
+    }
+    public void setId(String id) {
+        this.id = id;
+    }
+    public String getName() {
+        return name;
+    }
+    public void setName(String name) {
+        this.name = name;
+    }
+    public String getAddress() {
+        return address;
+    }
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+}
+
+
+------------------------------------------------------------------------------
+
+import java.rmi.Remote;
+import java.rmi.RemoteException;
+import java.util.List;
+
+public interface MyRMIStudentOperations extends Remote {
+    Student getStudent(String id) throws RemoteException;
+    List<Student> getAllStudents() throws RemoteException;
+}
+
+----------------------------------------------------------------------------------
+
+import java.rmi.RemoteException;
+import java.rmi.server.UnicastRemoteObject;
+import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
+
+public class Implement extends UnicastRemoteObject implements MyRMIStudentOperations {
+
+    private Connection con;
+
+    public Implement() throws RemoteException {
+        super();
+        connectdb();
+    }
+
+    private void connectdb(){
+        try {
+            Class.forName("com.mysql.cj.jdbc.Driver");
+
+            con= DriverManager.getConnection(
+                    "jdbc:mysql://localhost:3306/student",
+                    "root",
+                    "1234"
+            );
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public Student getStudent(String id) throws RemoteException {
+        String sql= "select * from basicdata where stu_id=?";
+        try {
+            PreparedStatement pst= con.prepareStatement(sql);
+            pst.setString(1, String.valueOf(id));
+            ResultSet rs=pst.executeQuery();
+
+            if(rs.next()){
+                return new Student(
+                rs.getString("stu_id"),
+                rs.getString("stu_name"),
+                rs.getString("stu_address")
+                );
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return null;
+    }
+
+    @Override
+    public List<Student> getAllStudents() throws RemoteException {
+       List<Student> list = new ArrayList<>();
+
+        try {
+            Statement st = con.createStatement();
+            ResultSet rs = st.executeQuery("select * from basicdata");
+            while(rs.next()){
+                list.add(new Student(
+                        rs.getString(1),
+                        rs.getString(2),
+                        rs.getString(3)
+                ));
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return list;
+    }
+}
+
+---------------------------------------------------------------------------------
+
+
+import java.rmi.RemoteException;
+import java.rmi.registry.LocateRegistry;
+import java.rmi.registry.Registry;
+
+public class Myserver {
+    public static void main(String[] args) {
+        try {
+            Registry registry = LocateRegistry.createRegistry(1099);
+
+            MyRMIStudentOperations service = new Implement();
+
+            registry.rebind("student", service);
+            System.out.println("Server is ready");
+
+        } catch (RemoteException e) {
+            throw new RuntimeException(e);
+        }
+    }
+}
+
+-----------------------------------------------------------------------------------------
+
+
+import java.rmi.NotBoundException;
+import java.rmi.RemoteException;
+import java.rmi.registry.LocateRegistry;
+import java.rmi.registry.Registry;
+import java.util.List;
+
+public class Myclient {
+    public static void main(String[] args) {
+        try {
+            Registry registry = LocateRegistry.getRegistry("localhost",1099);
+            MyRMIStudentOperations service = (MyRMIStudentOperations) registry.lookup("student");
+
+           //Student s = service.getStudent("TG001");
+            //System.out.println(s.getName()+"-"+s.getAddress());
+
+            List<Student> students = service.getAllStudents();
+            for (Student student : students) {
+                System.out.println(
+                        student.getId() + " - " + student.getName() + " - " + student.getAddress()
+                );
+
+            }
+
+
+        } catch (RemoteException e) {
+            throw new RuntimeException(e);
+        } catch (NotBoundException e) {
+            throw new RuntimeException(e);
+        }
+    }
+}
+
+
+--------------------------------------------------------------
+
+add the databse connector jar file also 
+
+---------------------------------------------------------------
+---------------------------------------------------------------
